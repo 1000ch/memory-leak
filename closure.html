@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Closure Sample</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class='container'>
+      <div class="jumbotron">
+        <h1>Closure Sample</h1>
+        <button id='js-create' class='btn btn-primary btn-lg'>Create</button>
+        <button id='js-destroy' class='btn btn-danger btn-lg'>Destroy</button>
+      </div>
+      <ul>
+        <li>
+          <h2>1. Click "Create" button.</h2>
+          <p>Take heap snapshot and confirm "leaker" object exists.</p>
+          <p>And setInterval timer is running.</p>
+        </li>
+        <li>
+          <h2>2. Click "Destroy" button.</h2>
+          <p>Type "leak" on console and confirm "leak" is null.</p>
+          <p>But setInterval timer is running.</p>
+        </li>
+        <li>
+          <h2>3. Insert process to clear timer. And do 1 ~ 2.</h2>
+        </li>
+      </ul>
+    </div>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+    <script>
+      var Leaker = function() {};
+      Leaker.prototype = {
+        init: function() {
+          this._interval = null;
+          this.start();
+        },
+        start: function() {
+          var self = this;
+          this._interval = setInterval(function() {
+            self.onInterval();
+          }, 100);
+        },
+        destroy: function() {
+          if (this._interval !== null) {
+            clearInterval(this._interval);
+          }
+        },
+        onInterval: function() {
+          console.log("Interval");
+        }
+      };
+    
+      var leak;
+      $(function() {
+        $('#js-create').on('click', function() {
+          console.log('Create button is clicked.');
+          if (leak) {
+            return;
+          }
+          leak = new Leaker();
+          leak.init();
+        });
+    
+        $('#js-destroy').on('click', function() {
+          console.log('Destroy button is clicked.');
+          leak.destroy();
+          leak = null;
+        });
+      });
+    </script>
+  </body>
+</html>

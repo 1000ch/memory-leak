@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Cycles Reference Sample</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class='container'>
+      <div class="jumbotron">
+        <h1>Cycles Reference Sample</h1>
+        <button id='js-create' class='btn btn-primary btn-lg'>Create</button>
+        <button id='js-destroy' class='btn btn-danger btn-lg'>Destroy</button>
+      </div>
+      <ul>
+        <li>
+          <h2>1. Click "Create" button.</h2>
+          <p>Take heap snapshot and confirm two "leaker" objects exist.</p>
+        </li>
+        <li>
+          <h2>2. Click "Destroy" button.</h2>
+          <p>Take heap snapshot and confirm two "leaker" objects exist, although null is set into "leak".</p>
+        </li>
+        <li>
+          <h2>3. Insert process to destruct child. And do 1 ~ 2.</h2>
+        </li>
+      </ul>
+<pre>
+Leaker(leaker 1) -> new Leaker().init('leaker 1', null, registry). this is registered to registry.
+  _registry: Registry -> this contains leaker1 and leaker2 as subscriber.
+  _child: Leaker(leaker 2) -> createChildren() of leaker1.init(). leaker1 does not have parent. this is registered to registry.
+    _registry: Registry -> this contains leaker1 and leaker2 as subscriber.
+</pre>
+    </div>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'></script>
+    <script>
+      var Registry = function() {};
+      Registry.prototype = {
+        init: function() {
+          this._subscribers = [];
+        },
+        add: function(subscriber) {
+          if(this._subscribers.indexOf(subscriber) >= 0){
+            // Already registered so bail out
+            return;
+          }
+          this._subscribers.push(subscriber);
+        },
+        remove: function(subscriber) {
+          if(this._subscribers.indexOf(subscriber) < 0){
+            // Not currently registered so bail out
+            return;
+          }
+          this._subscribers.splice(
+              this._subscribers.indexOf(subscriber), 1
+          );
+        }
+      };
+
+      var Leaker = function() {};
+      Leaker.prototype = {
+        init: function(name, parent, registry) {
+          this._name = name;
+          this._registry = registry;
+          this._parent = parent;
+          this._child = null;
+          this.createChildren();
+          this.registerCallback();
+        },
+        createChildren: function() {
+          if (this._parent !== null) {
+            // Only create child if this is the root
+            return;
+          }
+          this._child = new Leaker();
+          this._child.init("leaker 2", this, this._registry);
+        },
+        registerCallback: function() {
+          this._registry.add(this);
+        },
+        destroy: function() {
+          if (this._child !== null) {
+            this._child.destroy();
+          }
+          this._registry.remove(this);
+        }
+      };
+
+      var leak;
+      var registry = new Registry();
+      registry.init();
+      $(function() {
+        $('#js-create').on('click', function() {
+          console.log('Create button is clicked.');
+          var leakExists = !(window["leak"] === null || window["leak"] === undefined);
+          if (leakExists) {
+            return;
+          }
+          leak = new Leaker();
+          leak.init('leaker 1', null, registry);
+        });
+
+        $('#js-destroy').on('click', function() {
+          console.log('Destroy button is clicked.');
+          leak.destroy();
+          leak = null;
+        });
+      });
+    </script>
+  </body>
+</html>
