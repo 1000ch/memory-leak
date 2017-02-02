@@ -1,0 +1,21 @@
+{
+  "name": "memory-leak",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1000ch/memory-leak.git"
+  },
+  "scripts": {
+    "postinstall": "cat node_modules/primer-css/build/build.css > primer.css && cat node_modules/primer-markdown/build/build.css > primer-markdown.css"
+  },
+  "author": "1000ch",
+  "license": "Public Domain",
+  "bugs": {
+    "url": "https://github.com/1000ch/memory-leak/issues"
+  },
+  "homepage": "https://github.com/1000ch/memory-leak#readme",
+  "dependencies": {
+    "primer-css": "^4.7.0",
+    "primer-markdown": "^3.3.3"
+  }
+}

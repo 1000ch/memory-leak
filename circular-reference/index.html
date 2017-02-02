@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Circular Reference Sample</title>
+    <link rel="stylesheet" href="../primer.css">
+    <link rel="stylesheet" href="../primer-markdown.css">
+  </head>
+  <body>
+    <div class="container markdown-body">
+      <h1>Circular Reference Sample</h1>
+      <button id="js-create" class="btn btn-primary">Create</button>
+      <button id="js-leak" class="btn btn-danger">Leak</button>
+      <button id="js-dispose" class="btn">Dispose</button>
+      <h2>1. Click "Create" button.</h2>
+      <p>Take heap snapshot and confirm two <code>Leaker</code> objects exist.</p>
+      <h2>2. Click "Leak" button.</h2>
+      <p>Take heap snapshot and confirm two <code>Leaker</code> objects exist, although null is set into "leaker".</p>
+      <ul>
+        <li>Leaker(leaker 1) -> new Leaker('leaker 1', null, registry). this is registered to registry.</li>
+        <li>
+          <ul>
+            <li>registry: Registry -> this contains leaker1 and leaker2 as subscriber.</li>
+            <li>child: Leaker(leaker 2) -> createChildren() of leaker1.constructor(). leaker1 does not have parent. this is registered to registry.</li>
+            <li>
+              <ul>
+                <li>registry: Registry -> this contains leaker1 and leaker2 as subscriber.</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <h2>3. Click "Dispose" button</h2>
+      <p>To clear cycles reference before clicking "Leak" button</p>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

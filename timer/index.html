@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Timer Sample</title>
+    <link rel="stylesheet" href="../primer.css">
+    <link rel="stylesheet" href="../primer-markdown.css">
+  </head>
+  <body>
+    <div class="container markdown-body">
+      <h1>Timer Sample</h1>
+      <button id="js-create" class="btn btn-primary">Create</button>
+      <button id="js-leak" class="btn btn-danger">Leak</button>
+      <button id="js-dispose" class="btn">Dispose</button>
+      <h2>1. Click "Create" button</h2>
+      <p>Take heap snapshot and confirm <code>Leaker</code> object exists. And setInterval timer is running.</p>
+      <h2>2. Click "Leak" button</h2>
+      <p>Type "leaker" on console and confirm "leaker" is null. But setInterval timer is running.</p>
+      <h2>3. Click "Dispose" button</h2>
+      <p>To clear timer before clicking "Leak" button</p>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

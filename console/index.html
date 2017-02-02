@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Console Log Sample</title>
+    <link rel="stylesheet" href="../primer.css">
+    <link rel="stylesheet" href="../primer-markdown.css">
+  </head>
+  <body>
+    <div class="container markdown-body">
+      <h1>Console Log Sample</h1>
+      <button id="js-create" class="btn btn-primary">Create</button>
+      <button id="js-dispose" class="btn">Dispose</button>
+      <h2>1. Click "Create" button.</h2>
+      <p>Take heap snapshot and confirm <code>Leaker</code> object exists.</p>
+      <h2>2. Click "Dispose" button.</h2>
+      <p>Type "leaker" on console and confirm "leaker" is null. Take heap snapshot and confirm <code>Leaker</code> object exists.</p>
+      <h2>3. Clear console.</h2>
+      <p>Take heap snapshot and confirm <code>Leaker</code> object does not exist.</p>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
